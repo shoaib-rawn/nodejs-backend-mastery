@@ -43,7 +43,8 @@
   "cors": "^2.8.5",              // Middleware enabling Cross-Origin requests from frontend apps
   "dotenv": "^16.4.7",          // Loads environment variables from .env into process.env
   "express": "^4.21.2",          // Core REST API web framework
-  "helmet": "^8.0.0"             // Security middleware setting HTTP protection headers
+  "helmet": "^8.0.0",             // Security middleware setting HTTP protection headers
+  "pg": "^8.13.1"                // PostgreSQL client driver for live SQL database connections
 }
 ```
 
@@ -56,6 +57,7 @@
   "@types/cors": "^2.8.17",       // TypeScript type definitions for cors
   "@types/express": "^4.17.21",   // TypeScript type definitions for express (req, res)
   "@types/node": "^22.10.1",      // TypeScript type definitions for Node.js (process, path)
+  "@types/pg": "^8.11.10",       // TypeScript type definitions for PostgreSQL driver
   "prisma": "^5.22.0",            // Prisma CLI tool for DB migrations & schema management
   "ts-node-dev": "^2.0.0",        // Dev server with auto-reload & colored terminal logs
   "typescript": "^5.7.2"          // TypeScript compiler (tsc)
