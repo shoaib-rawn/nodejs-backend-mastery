@@ -1,20 +1,29 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import { getDatabaseConfig } from './config/db.config.js';
 
 const app: Application = express();
 
 // Global Middlewares
-app.use(helmet());//: Adds HTTP security headers (protects against common web attacks).
-app.use(cors());//Enables Cross-Origin Resource Sharing so web clients can access the API.
-app.use(express.json());// Allows the server to parse JSON data sent in the request body.
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
 
 // Healthcheck Route
 app.get('/api/v1/health', (req: Request, res: Response) => {
-  res.status(500).json({
+  const dbConfig = getDatabaseConfig();
+
+  res.status(200).json({
     status: 'success',
     message: 'E-Commerce API Service is up and running!',
     version: '1.0.0',
+    database: {
+      isConfigured: dbConfig.isConfigured,
+      host: dbConfig.host,
+      port: dbConfig.port,
+      databaseName: dbConfig.database
+    },
     timestamp: new Date().toISOString()
   });
 });
