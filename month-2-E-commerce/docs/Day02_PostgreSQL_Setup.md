@@ -1,7 +1,7 @@
 # Month 2 Day 02: PostgreSQL Setup, Database Tooling & SQL Basics
 
 ## 📌 Executive Summary
-On Day 01, we designed our E-Commerce relational database schema on paper. Today on **Day 02**, we get hands-on with **PostgreSQL**, setup database GUI tools (**DBeaver / pgAdmin / VS Code extensions**), understand connection strings, and master core **SQL syntax** (`CREATE TABLE`, `INSERT INTO`, `SELECT`, `UPDATE`, `DELETE`).
+On Day 01, we designed our E-Commerce relational database schema on paper. Today on **Day 02**, we get hands-on with **PostgreSQL**, setup database GUI tools (**DBeaver / pgAdmin / VS Code extensions**), understand connection strings, master `psql` command-line operations, and learn core **SQL syntax** (`CREATE TABLE`, `INSERT INTO`, `SELECT`, `UPDATE`, `DELETE`).
 
 ---
 
@@ -11,7 +11,7 @@ PostgreSQL (often called "Postgres") is an enterprise-grade, open-source **Relat
 - **Process Model:** Runs as a background service listening on port **`5432`** by default.
 - **Client-Server Architecture:**
   - **Server (Daemon):** Manages disk storage, memory buffer pool, indexing, and executes SQL queries.
-  - **Client (GUI / Node.js):** Connects to port 5432, sends SQL commands, and receives tabular result sets.
+  - **Client (GUI / CLI / Node.js):** Connects to port 5432, sends SQL commands, and receives tabular result sets.
 
 ---
 
@@ -37,9 +37,56 @@ postgresql://username:password@localhost:5432/database_name?schema=public
 
 ---
 
-## 3. Recommended Database GUI Tools
+## 3. Command Line (`psql`) Step-by-Step Guide 🛠️
 
-To visualize your databases, tables, and rows, install one of the following:
+Follow these steps to connect and create your database directly from **CMD** or **PowerShell**:
+
+### Step 1: Log into PostgreSQL CLI (`psql`)
+Open CMD or PowerShell and run:
+```cmd
+psql -U postgres
+```
+*(Enter your password when prompted).*
+
+> 💡 **If CMD says `'psql' is not recognized`:**
+> Run using the full path:
+> `"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres`
+
+### Step 2: Create the `ecommerce_db` Database
+```sql
+CREATE DATABASE ecommerce_db;
+```
+
+### Step 3: List All Databases
+```sql
+\l
+```
+
+### Step 4: Connect to `ecommerce_db`
+```sql
+\c ecommerce_db
+```
+
+### Step 5: Test Creating a Table & Listing Tables
+```sql
+CREATE TABLE test_users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+\dt
+```
+
+### Step 6: Exit PostgreSQL CLI
+```sql
+\q
+```
+
+---
+
+## 4. Recommended Database GUI Tools
+
+To visualize your databases, tables, and rows visually, install one of the following:
 
 1. **DBeaver (Recommended):** Universal free database GUI with schema visualizers.
 2. **pgAdmin 4:** Official administration web/desktop app for PostgreSQL.
@@ -47,7 +94,7 @@ To visualize your databases, tables, and rows, install one of the following:
 
 ---
 
-## 4. Core SQL Syntax Overview
+## 5. Core SQL Syntax Overview
 
 ### A. Data Definition Language (DDL) - `CREATE TABLE`
 ```sql
@@ -94,4 +141,5 @@ WHERE id = 1;
 ## 💡 Summary Checklist
 - [x] Understand PostgreSQL client-server process on port `5432`.
 - [x] Deconstruct database connection URLs (`postgresql://...`).
+- [x] Master `psql` CLI commands (`psql -U postgres`, `CREATE DATABASE`, `\l`, `\c`, `\dt`, `\q`).
 - [x] Learn DDL & DML SQL queries (`CREATE`, `INSERT`, `SELECT`, `UPDATE`, `DELETE`).
