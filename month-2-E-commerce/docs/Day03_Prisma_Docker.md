@@ -15,7 +15,7 @@ In professional backend development, installing databases directly on your host 
 ### 🐳 What is Docker?
 Docker wraps software in a lightweight, isolated container including all dependencies needed to run it.
 
-### 💽 What is a Docker Image?
+### 💽 What is a Docker Image? love
 A **Docker Image** is a read-only template containing the operating system, system libraries, and application settings required to run a specific software (like a pre-packaged installer or blueprint).
 - **Postgres Image (`postgres:16-alpine`):** Contains the PostgreSQL engine compiled on a minimal Alpine Linux distribution.
 - **Redis Image (`redis:7-alpine`):** Contains the Redis database engine compiled on Alpine Linux.
