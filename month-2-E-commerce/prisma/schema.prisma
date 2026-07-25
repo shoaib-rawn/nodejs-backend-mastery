@@ -7,9 +7,39 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// 👤 Temporary model to demonstrate Prisma generation benefits
+// 🏷️ Predefined role levels for controlling user permissions
+enum Role {
+  CUSTOMER // Standard buyer account with limited access
+  SELLER   // Merchant account allowed to list and manage products
+  ADMIN    // Super-administrator account with full system access
+}
+
+// 👤 Core user authentication and credentials table
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+  role Role @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile Profile? 
+}
+
+
+// 📄 Personal demographic and location metadata details for a user
+model Profile {
+  id         Int      @id @default(autoincrement()) // Primary key, auto-incremented by the database
+  firstName  String                                // User's first name
+  lastName   String                                // User's last name
+  phone      String?                               // Nullable phone contact string
+  avatarUrl  String?                               // Nullable URL pointing to profile image upload
+  street     String                                // Physical street billing/shipping address
+  city       String                                // Home city address
+  state      String?                               // Optional state or region code
+  postalCode String                                // Postal/ZIP code for routing shipping
+  country    String                                // Location country name
+  userId     Int      @unique                      // Foreign key referencing User.id, unique constraint enforces 1:1
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship map with Cascade delete
+  createdAt  DateTime @default(now())              // Track when the profile was generated
+  updatedAt  DateTime @updatedAt                   // Auto-updated timestamp on profile changes
 }

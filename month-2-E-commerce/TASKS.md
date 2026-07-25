@@ -3,8 +3,8 @@
 ## Week 1: Relational Databases, Docker & Schema Modeling
 - `[x]` **Day 01:** Intro to Relational Databases (SQL vs NoSQL) & Relational Principles
 - `[x]` **Day 02:** PostgreSQL Setup, DBeaver/pgAdmin setup & SQL syntax
-- `[ ]` **Day 03:** Docker Compose Setup (PostgreSQL & Redis) + Prisma ORM Setup
-- `[ ]` **Day 04:** Data Modeling 1: Users, Profiles & Roles (1:1)
+- `[x]` **Day 03:** Docker Compose Setup (PostgreSQL & Redis) + Prisma ORM Setup
+- `[x]` **Day 04:** Data Modeling 1: Users, Profiles & Roles (1:1)
 - `[ ]` **Day 05:** Data Modeling 2: Categories & Products (1:N)
 - `[ ]` **Day 06:** Data Modeling 3: Orders, Cart & Order Items (N:M)
 - `[ ]` **Day 07:** Database Migrations & Seeding Scripts
