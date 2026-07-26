@@ -22,9 +22,9 @@ model User {
   role Role @default(CUSTOMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  profile Profile? 
+  profile   Profile? 
+  reviews   Review[]                              // 1:N relationship: A user can write many reviews
 }
-
 
 // 📄 Personal demographic and location metadata details for a user
 model Profile {
@@ -43,3 +43,53 @@ model Profile {
   createdAt  DateTime @default(now())              // Track when the profile was generated
   updatedAt  DateTime @updatedAt                   // Auto-updated timestamp on profile changes
 }
+
+// 📁 Category model for organizing products
+model Category {
+  id          Int       @id @default(autoincrement()) // Auto-incrementing primary key
+  name        String    @unique                      // Unique display name (e.g. "Electronics")
+  slug        String    @unique                      // Unique URL slug for routing/SEO (e.g. "electronics")
+  description String?                                // Optional category details
+  products    Product[]                              // 1:N relationship: A category contains many products
+  createdAt   DateTime  @default(now())              // Timestamp when category is created
+  updatedAt   DateTime  @updatedAt                   // Auto-updated timestamp on modification
+}
+
+// 📦 Product model representing catalog inventory items
+model Product {
+  id          Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  name        String                                // Product display name
+  slug        String   @unique                      // Unique URL slug for SEO lookup (e.g. "iphone-15-pro")
+  description String                                // Markdown or text description of product
+  price       Decimal                               // Arbitrary precision decimal for currency (avoids float inaccuracies)
+  stock       Int      @default(0)                  // Quantity available in inventory
+  images      String[]                              // Postgres scalar list storing image URLs
+  
+  // Category Link
+  categoryId  Int                                   // Foreign key reference to Category
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict) // Linked category model with Restrict action
+  
+  reviews     Review[]                              // 1:N relationship: A product can have many reviews
+  
+  createdAt   DateTime @default(now())              // Timestamp when product is added
+  updatedAt   DateTime @updatedAt                   // Auto-updated timestamp on modification
+}
+
+// 💬 Review model representing product feedback from users
+model Review {
+  id        Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  rating    Int                                   // Score given to the product (e.g., 1 to 5)
+  comment   String                                // Written review text
+  
+  // User Link (Who wrote it)
+  userId    Int                                   // Foreign key referencing User.id
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relate to User. Cascade deletes reviews on User deletion.
+  
+  // Product Link (What product it reviews)
+  productId Int                                   // Foreign key referencing Product.id
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // Relate to Product. Cascade deletes reviews on Product deletion.
+  
+  createdAt DateTime @default(now())              // Timestamp when review is posted
+  updatedAt DateTime @updatedAt                   // Auto-updated timestamp on modification
+}
+
