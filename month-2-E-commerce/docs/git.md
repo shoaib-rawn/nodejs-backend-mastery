@@ -231,3 +231,51 @@ Undoes the commit and **permanently destroys all changes** in your files since t
 git reset --hard HEAD~1
 ```
 *   **Why use it:** Only use this when you want to throw away your recent code changes completely and restore the project back to the previous commit status.
+
+---
+
+## 9. Git Stash: Saving Work Temporarily
+
+**The Scenario:**
+You are in the middle of implementing a complex feature (e.g. Day 05 Categories & Products) on your branch, but you haven't finished the code yet, so you cannot make a clean commit. Suddenly, your team lead asks you to switch immediately to the `main` branch to debug a critical production bug. When you try to checkout the other branch, Git blocks you, warning that your uncommitted changes would be overwritten.
+
+**Why it happens:**
+Git prevents you from switching branches if you have modified files that conflict with the branch you are switching to. This safety feature prevents you from accidentally losing your working draft.
+
+**The Solution (Stashing):**
+You can "stash" your changes in a temporary drawer, leaving your working directory completely clean. Once you finish the hotfix on the other branch, you can switch back and pull your changes out of the drawer!
+
+### 1. Save your changes temporarily
+Run this command to clear your working directory and save your modifications:
+```bash
+git stash
+```
+*Your code editor will instantly revert to the status of your last commit, but your draft changes are saved safely in Git's stack.*
+
+### 2. (Optional) Give your stash a custom name
+If you have multiple stashes and want to label them:
+```bash
+git stash save "Work in progress on Day 05"
+```
+
+### 3. Switch branches and complete your bugfix
+```bash
+git checkout main
+# ... fix the bug, commit, and push ...
+```
+
+### 4. Switch back and restore your work
+Once you return to your feature branch, retrieve your stashed changes:
+```bash
+git checkout feature/day05-categories-products
+
+# Pull the changes out of the stash stack and apply them
+git stash pop
+```
+*`git stash pop` applies the changes to your working directory and automatically deletes that stash from the Git stack. If you want to keep the stash in the stack while applying it, use `git stash apply` instead.*
+
+### 5. Managing your stashes
+*   **List all stashes**: `git stash list`
+*   **Clear all stashes**: `git stash clear`
+*   **Drop a specific stash**: `git stash drop stash@{0}`
+

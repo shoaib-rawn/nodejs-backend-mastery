@@ -4,6 +4,8 @@ Welcome to **Month 2** of the Node.js Backend Mastery Roadmap! In this 30-day in
 
 *(Incorporating Senior Engineer Feedback)*
 
+*   **Database Testing Cheat Sheet**: Check out our [Database Testing Reference Guide](file:///d:/anti/month-2-E-commerce/docs/db-tests.md) for step-by-step verification commands and instructions for Days 1 to 5.
+
 ---
 
 ## 📅 Daily Progress Tracker (Month 2: Days 01 - 30)
@@ -14,7 +16,7 @@ Welcome to **Month 2** of the Node.js Backend Mastery Roadmap! In this 30-day in
 | **Day 02** | PostgreSQL Setup, Tooling & SQL Basics | [Day02_PostgreSQL_Setup.md](file:///d:/anti/month-2-E-commerce/docs/Day02_PostgreSQL_Setup.md) | [Day02_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day02_Homework.md) | [Day02_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day02_Homework_Guide.md) | ✅ Completed |
 | **Day 03** | Docker Compose (Postgres & Redis) + Prisma ORM | [Day03_Prisma_Docker.md](file:///d:/anti/month-2-E-commerce/docs/Day03_Prisma_Docker.md) | [Day03_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day03_Homework.md) | [Day03_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day03_Homework_Guide.md) | ✅ Completed |
 | **Day 04** | Data Modeling 1: Users, Profiles & Roles (1:1) | [Day04_Users_Profiles_Roles.md](file:///d:/anti/month-2-E-commerce/docs/Day04_Users_Profiles_Roles.md) | [Day04_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day04_Homework.md) | [Day04_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day04_Homework_Guide.md) | ✅ Completed |
-| **Day 05** | Data Modeling 2: Categories & Products (1:N) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 05** | Data Modeling 2: Categories & Products (1:N) | [Day05_Categories_Products.md](file:///d:/anti/month-2-E-commerce/docs/Day05_Categories_Products.md) | [Day05_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day05_Homework.md) | [Day05_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day05_Homework_Guide.md) | ✅ Completed |
 | **Day 06** | Data Modeling 3: Orders, Cart & Order Items (N:M) | Pending | Pending | Pending | ⏳ Pending |
 | **Day 07** | Database Migrations & Automated Seeding Scripts | Pending | Pending | Pending | ⏳ Pending |
 | **Day 08** | `.env` Zod Validation Schema & Password Hashing | Pending | Pending | Pending | ⏳ Pending |
