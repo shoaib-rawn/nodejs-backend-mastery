@@ -24,3 +24,6 @@ uploads/
 
 # Preparation notes (local study blocks)
 preparation/
+
+# Agent configuration rules (local only)
+.agents/
