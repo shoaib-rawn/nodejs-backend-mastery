@@ -11,3 +11,12 @@
 2. **README Maintenance:**
    Remind the user to update their `README.md` daily progress tracker when a day is completed before pushing to GitHub.
 
+3. **Daily Preparation Folder Update Rule:**
+   For every new "Day" in the roadmap, the agent MUST update the local `/preparation` files:
+   - **theory_reading.md**: Add/update reading links and specific theory topics for the day.
+   - **linkedin_posts.md**: Draft a new customized post template describing the day's specific implementation success.
+   - **dsa_oop_prep.md**: Add targeted backend-relevant DSA questions or OOP concept discussions for daily study.
+   - **interview_prep.md**: Add 3-4 short, high-impact interview questions with answers based on the day's specific topic.
+   - *Ensure the `/preparation` directory is kept ignored in `.gitignore`.*
+
+
