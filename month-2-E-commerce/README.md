@@ -1,8 +1,8 @@
-# 🛍️ Month 2: E-Commerce REST API (PostgreSQL + Prisma ORM)
+# 🛍️ Month 2: Multi-Merchant Enterprise SaaS Platform (Shopify Clone)
 
-Welcome to **Month 2** of the Node.js Backend Mastery Roadmap! In this 30-day intensive project, we build a production-grade **E-Commerce Backend REST API** powered by **PostgreSQL, Prisma ORM, Docker Compose, Zod Validation, Cloudinary, JWT Auth, Redis Caching, and Automated Testing (Jest & Supertest)**.
+Welcome to **Month 2** of the Node.js Backend Mastery Roadmap! In this 30-day intensive project, we build a production-grade **Multi-Merchant Enterprise SaaS Backend API** (Shopify Clone) powered by **PostgreSQL, Prisma ORM, Docker Compose, Zod Validation, Cloudinary, JWT Auth, Redis Caching, Socket.io WebSockets, BullMQ Background Workers, OpenAI, pgvector Semantic Search, and Automated Testing (Jest & Supertest)**.
 
-*(Incorporating Senior Engineer Feedback)*
+*(Incorporating Senior Engineer Feedback & Multi-Tenant Design)*
 
 *   **Database Testing Cheat Sheet**: Check out our [Database Testing Reference Guide](file:///d:/anti/month-2-E-commerce/docs/db-tests.md) for step-by-step verification commands and instructions for Days 1 to 5.
 
@@ -17,31 +17,31 @@ Welcome to **Month 2** of the Node.js Backend Mastery Roadmap! In this 30-day in
 | **Day 03** | Docker Compose (Postgres & Redis) + Prisma ORM | [Day03_Prisma_Docker.md](file:///d:/anti/month-2-E-commerce/docs/Day03_Prisma_Docker.md) | [Day03_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day03_Homework.md) | [Day03_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day03_Homework_Guide.md) | ✅ Completed |
 | **Day 04** | Data Modeling 1: Users, Profiles & Roles (1:1) | [Day04_Users_Profiles_Roles.md](file:///d:/anti/month-2-E-commerce/docs/Day04_Users_Profiles_Roles.md) | [Day04_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day04_Homework.md) | [Day04_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day04_Homework_Guide.md) | ✅ Completed |
 | **Day 05** | Data Modeling 2: Categories & Products (1:N) | [Day05_Categories_Products.md](file:///d:/anti/month-2-E-commerce/docs/Day05_Categories_Products.md) | [Day05_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day05_Homework.md) | [Day05_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day05_Homework_Guide.md) | ✅ Completed |
-| **Day 06** | Data Modeling 3: Orders, Cart & Order Items (N:M) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 07** | Database Migrations & Automated Seeding Scripts | Pending | Pending | Pending | ⏳ Pending |
-| **Day 08** | `.env` Zod Validation Schema & Password Hashing | Pending | Pending | Pending | ⏳ Pending |
-| **Day 09** | JWT Access & Refresh Token Authentication | Pending | Pending | Pending | ⏳ Pending |
-| **Day 10** | Role-Based Access Control (RBAC: Admin vs Customer) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 11** | Zod Request Validation Middleware & Product API | Pending | Pending | Pending | ⏳ Pending |
-| **Day 12** | Search, Filtering, Sorting & Pagination API | Pending | Pending | Pending | ⏳ Pending |
-| **Day 13** | Cloud Image Uploads (Cloudinary SDK + Multer) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 14** | Shopping Cart API (Add, Update, Remove, Totals) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 15** | Order Checkout API & Prisma Transactions | Pending | Pending | Pending | ⏳ Pending |
-| **Day 16** | Order Status Workflow (Pending -> Delivered) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 17** | Payment Integration Logic (Stripe Simulation) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 18** | Customer Account & Order History Endpoints | Pending | Pending | Pending | ⏳ Pending |
-| **Day 19** | Security Hardening (Rate limiting, Helmet, CORS) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 20** | Centralized Error Handling & Logging | Pending | Pending | Pending | ⏳ Pending |
-| **Day 21** | API Documentation with Swagger UI & Postman Export | Pending | Pending | Pending | ⏳ Pending |
-| **Day 22** | Intro to Redis in Docker & High-Performance Caching | Pending | Pending | Pending | ⏳ Pending |
-| **Day 23** | Implementing Redis Caching for Product Catalog | Pending | Pending | Pending | ⏳ Pending |
-| **Day 24** | Cache Invalidation Patterns (Evicting Redis cache) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 25** | Automated Testing Part 1: Unit Testing with Jest | Pending | Pending | Pending | ⏳ Pending |
-| **Day 26** | Automated Testing Part 2: Integration Testing (Supertest) | Pending | Pending | Pending | ⏳ Pending |
-| **Day 27** | Database Indexing & Query Optimization | Pending | Pending | Pending | ⏳ Pending |
-| **Day 28** | Rate Limiting & Redis-backed API Throttling | Pending | Pending | Pending | ⏳ Pending |
-| **Day 29** | Production Build Optimization & Environment Hardening | Pending | Pending | Pending | ⏳ Pending |
-| **Day 30** | Final Code Review, Architecture Docs & Release | Pending | Pending | Pending | ⏳ Pending |
+| **Day 06** | Data Modeling 3: Orders, Cart & Order Items (N:M) | [Day06_Orders_Cart.md](file:///d:/anti/month-2-E-commerce/docs/Day06_Orders_Cart.md) | [Day06_Homework.md](file:///d:/anti/month-2-E-commerce/activities/Day06_Homework.md) | [Day06_Homework_Guide.md](file:///d:/anti/month-2-E-commerce/activities/Day06_Homework_Guide.md) | ✅ Completed |
+| **Day 07** | Relational Multi-Tenancy (Store/Members) & Database Seeding | Pending | Pending | Pending | ⏳ Pending |
+| **Day 08** | Zod Environment Validation Schema & Password Hashing | Pending | Pending | Pending | ⏳ Pending |
+| **Day 09** | JWT Session Auth (Access Tokens & Refresh Token Rotation) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 10** | Tenant-Level Role-Based Access Control (Admin vs Owner vs Customer) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 11** | Store & Product Management CRUD APIs | Pending | Pending | Pending | ⏳ Pending |
+| **Day 12** | Advanced Filtering & Category Tree Queries (Pagination) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 13** | Cloud Image Uploads for Store Products (Multer + Cloudinary SDK) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 14** | Multi-Tenant Shopping Cart Management API | Pending | Pending | Pending | ⏳ Pending |
+| **Day 15** | Order Checkout API & Prisma Transactions (Atomic Stock Decrement) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 16** | Background Job Queue Setup (Redis + BullMQ) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 17** | Async Background Workers (PDF Invoice Gen & Email Dispatch) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 18** | Real-Time Messaging: Socket.io with Redis Adapter | Pending | Pending | Pending | ⏳ Pending |
+| **Day 19** | WebSocket Room Sync (Live Catalog Stock Alerts) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 20** | Outbound Integrations: Custom Webhooks Dispatch Engine | Pending | Pending | Pending | ⏳ Pending |
+| **Day 21** | Inbound Webhooks: Automated Stripe Payment Handler | Pending | Pending | Pending | ⏳ Pending |
+| **Day 22** | Redis Caching for Popular Tenant Catalogs | Pending | Pending | Pending | ⏳ Pending |
+| **Day 23** | Cache Invalidation Patterns (Evicting Catalog Cache on Mutations) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 24** | AI Product Copywriter API (OpenAI Prompt Engineering) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 25** | AI Semantic Product Search Engine (PostgreSQL pgvector) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 26** | Automated Testing Part 1: Unit Testing API Controllers | Pending | Pending | Pending | ⏳ Pending |
+| **Day 27** | Automated Testing Part 2: Integration Testing (Supertest) | Pending | Pending | Pending | ⏳ Pending |
+| **Day 28** | Database Indexing & Complex Relational Queries Optimization | Pending | Pending | Pending | ⏳ Pending |
+| **Day 29** | API Throttling, Security Headers & Rate Limiting | Pending | Pending | Pending | ⏳ Pending |
+| **Day 30** | Production Orchestration (Docker Compose) & Swagger UI Docs | Pending | Pending | Pending | ⏳ Pending |
 
 ---
 

@@ -24,6 +24,8 @@ model User {
   updatedAt DateTime @updatedAt
   profile   Profile? 
   reviews   Review[]                              // 1:N relationship: A user can write many reviews
+  cartItems CartItem[]                            // 1:N relationship: User's active shopping cart items
+  orders    Order[]                               // 1:N relationship: User's historical checkouts
 }
 
 // 📄 Personal demographic and location metadata details for a user
@@ -57,22 +59,24 @@ model Category {
 
 // 📦 Product model representing catalog inventory items
 model Product {
-  id          Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  name        String                                // Product display name
-  slug        String   @unique                      // Unique URL slug for SEO lookup (e.g. "iphone-15-pro")
-  description String                                // Markdown or text description of product
-  price       Decimal                               // Arbitrary precision decimal for currency (avoids float inaccuracies)
-  stock       Int      @default(0)                  // Quantity available in inventory
-  images      String[]                              // Postgres scalar list storing image URLs
+  id          Int         @id @default(autoincrement()) // Auto-incrementing primary key
+  name        String                                    // Product display name
+  slug        String      @unique                       // Unique URL slug for SEO lookup (e.g. "iphone-15-pro")
+  description String                                    // Markdown or text description of product
+  price       Decimal                                   // Arbitrary precision decimal for currency (avoids float inaccuracies)
+  stock       Int         @default(0)                   // Quantity available in inventory
+  images      String[]                                  // Postgres scalar list storing image URLs
   
   // Category Link
-  categoryId  Int                                   // Foreign key reference to Category
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Restrict) // Linked category model with Restrict action
+  categoryId  Int                                       // Foreign key reference to Category
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict) // Linked category model with Restrict action
   
-  reviews     Review[]                              // 1:N relationship: A product can have many reviews
+  reviews     Review[]                                  // 1:N relationship: A product can have many reviews
+  cartItems   CartItem[]                                // 1:N relationship: Links to active shopping carts
+  orderItems  OrderItem[]                               // 1:N relationship: Links to historical invoice items
   
-  createdAt   DateTime @default(now())              // Timestamp when product is added
-  updatedAt   DateTime @updatedAt                   // Auto-updated timestamp on modification
+  createdAt   DateTime    @default(now())              // Timestamp when product is added
+  updatedAt   DateTime    @updatedAt                   // Auto-updated timestamp on modification
 }
 
 // 💬 Review model representing product feedback from users
@@ -93,3 +97,50 @@ model Review {
   updatedAt DateTime @updatedAt                   // Auto-updated timestamp on modification
 }
 
+// 🛒 Order status levels
+enum OrderStatus {
+  PENDING   // Order created, awaiting payment
+  PAID      // Payment processed successfully
+  SHIPPED   // Items dispatched
+  DELIVERED // Received by customer
+  CANCELLED // Refunded or voided
+}
+
+// 🛒 CartItem model for temporary active shopping baskets (Junction Table)
+model CartItem {
+  id        Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  userId    Int                                   // Foreign key referencing User.id
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Cascade delete: wipe cart if user is deleted
+  productId Int                                   // Foreign key referencing Product.id
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // Cascade delete: wipe cart item if product is deleted
+  quantity  Int      @default(1)                  // Quantity of this product in cart
+  createdAt DateTime @default(now())              // Timestamp when added to cart
+  updatedAt DateTime @updatedAt                   // Auto-updated timestamp on quantity modifications
+
+  @@unique([userId, productId])                  // Enforces unique product per user cart (preventing duplicate rows)
+}
+
+// 📄 Order model representing the main invoice header
+model Order {
+  id          Int         @id @default(autoincrement()) // Auto-incrementing primary key
+  userId      Int                                       // Foreign key referencing User.id
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade) // Cascade delete: delete orders if user is wiped
+  totalAmount Decimal                                   // Total invoice price (precision Decimal)
+  status      OrderStatus @default(PENDING)             // Current shipping/payment status
+  orderItems  OrderItem[]                               // 1:N relation pointing to order line items
+  createdAt   DateTime    @default(now())              // Timestamp when order was placed
+  updatedAt   DateTime    @updatedAt                   // Auto-updated timestamp when order status changes
+}
+
+// 🧾 OrderItem model representing explicit junction for detailed line items
+model OrderItem {
+  id              Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  orderId         Int                                   // Foreign key referencing Order.id
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade) // Cascade delete: delete items if parent invoice is deleted
+  productId       Int                                   // Foreign key referencing Product.id
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Restrict) // Restrict delete: prevent catalog product from being deleted if it has sales history!
+  quantity        Int                                   // Quantity purchased
+  priceAtPurchase Decimal                               // Frozen price snapshot at point of transaction
+  createdAt       DateTime @default(now())              // Timestamp when record was created
+  updatedAt       DateTime @updatedAt                   // Auto-updated timestamp
+}
