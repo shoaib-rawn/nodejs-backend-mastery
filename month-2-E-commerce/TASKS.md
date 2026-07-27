@@ -7,7 +7,7 @@
 - `[x]` **Day 04:** Data Modeling 1: Users, Profiles & Roles (1:1)
 - `[x]` **Day 05:** Data Modeling 2: Categories & Products (1:N)
 
-- `[ ]` **Day 06:** Data Modeling 3: Orders, Cart & Order Items (N:M)
+- `[x]` **Day 06:** Data Modeling 3: Orders, Cart & Order Items (N:M)
 - `[ ]` **Day 07:** Database Migrations & Seeding Scripts
 
 ## Week 2: Environment Validation, Zod, Auth & Product API

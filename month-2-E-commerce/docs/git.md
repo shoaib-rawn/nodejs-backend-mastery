@@ -279,3 +279,38 @@ git stash pop
 *   **Clear all stashes**: `git stash clear`
 *   **Drop a specific stash**: `git stash drop stash@{0}`
 
+---
+
+## 10. Undoing Pushed Commits Safely: Git Revert
+
+**The Scenario:**
+You discover that a commit you made yesterday introduced a critical bug. Unfortunately, you already pushed this commit to GitHub, and other developers have already pulled it. You want to undo that commit, but running `git reset` is forbidden because it deletes history, meaning everyone on your team would face sync conflicts.
+
+**Why it happens:**
+`git reset` rewrites Git history by erasing commits. Once a commit is pushed to a shared remote repository, rewriting history is highly discouraged. 
+
+**The Solution (`git revert`):**
+Instead of deleting the bad commit, `git revert` creates a **new, follow-up commit** that does the exact opposite of the bad commit (e.g. if the bad commit added a line, the revert commit deletes it). This keeps the history linear and clean without breaking anyone else's local copy.
+
+### 1. Find the hash of the bad commit
+Run this to see your commit history in a single line format:
+```bash
+git log --oneline
+```
+*Locate the hash of the commit you want to undo (e.g., `a1b2c3d`).*
+
+### 2. Revert the commit
+Run the revert command pointing to that hash:
+```bash
+git revert a1b2c3d
+```
+*Git will automatically open a text editor asking you to confirm the commit message (e.g., `Revert "feat: add buggy payment flow"`). Save and close the editor.*
+
+### 3. Push the safe revert commit to GitHub
+```bash
+git push origin <branch-name>
+```
+
+**Result**: You have successfully undone the buggy changes safely, and your team's Git histories remain perfectly synchronized!
+
+

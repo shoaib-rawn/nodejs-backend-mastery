@@ -1,4 +1,4 @@
-# 🧪 Database Testing Reference Guide (Days 01 - 05)
+# 🧪 Database Testing Reference Guide (Days 01 - 06)
 
 This document provides a concise, day-wise cheat sheet for verifying database schemas, connections, and referential constraints in your development environment.
 
@@ -81,3 +81,22 @@ This document provides a concise, day-wise cheat sheet for verifying database sc
    * Create and save a `Review` linked to both a User and the Product.
    * Delete the `Product` and click **Save**.
    * Go to the **Review** tab and confirm the review was automatically deleted.
+
+---
+
+## 🧾 Day 06: Many-to-Many (N:M) Junction Tables & Cart Constraints
+**Goal**: Validate composite unique indices on `CartItem`, check explicit junction data (`priceAtPurchase` on `OrderItem`), and verify order delete restrictions.
+1. Sync schema changes and launch Prisma Studio:
+   ```bash
+   npx prisma db push
+   npx prisma studio
+   ```
+2. **Verify Composite Unique Index on CartItem**:
+   * Add a `CartItem` record for User `2` and Product `1`. Click **Save**.
+   * Try to add a *second* `CartItem` record for the exact same User `2` and Product `1`. Click **Save**.
+   * *Expected Behavior: The database rejects the query (`Unique constraint failed on the fields: (userId,productId)`) because of the @@unique composite index.*
+3. **Verify onDelete: Restrict** (Product ➔ OrderItem):
+   * Create an `Order` and create an `OrderItem` linked to that Order and Product. Save both.
+   * Try to delete the `Product` from the database.
+   * *Expected Behavior: The database blocks the deletion (`P2003: Foreign key constraint violated`) because the product has active sales history.*
+
