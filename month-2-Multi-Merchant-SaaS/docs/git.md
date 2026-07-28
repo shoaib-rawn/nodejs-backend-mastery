@@ -313,4 +313,43 @@ git push origin <branch-name>
 
 **Result**: You have successfully undone the buggy changes safely, and your team's Git histories remain perfectly synchronized!
 
+---
 
+## 11. Untracking Files Already Pushed (git rm --cached)
+
+**The Scenario:**
+You accidentally committed and pushed a private folder (like `preparation/` or `.agents/`) or a sensitive file (like `.env`) to GitHub. You added it to your `.gitignore` file, but Git is still tracking it and pushes any modifications to GitHub. You want to stop tracking it on GitHub but keep the physical files on your local machine.
+
+**Why it happens:**
+Adding a file to `.gitignore` only works for **untracked** files. If a file was already committed and pushed, Git will continue to track it because it remains in Git's tracking cache. 
+
+**The Solution:**
+You must manually tell Git to stop tracking the file/folder in its index cache, without deleting your local copy:
+
+### 1. Add the path to `.gitignore`
+Make sure the file or folder is added to `.gitignore` first (e.g. adding `.agents/` or `preparation/`).
+
+### 2. Remove the file/folder from Git tracking cache
+Run this command from the repository root:
+```bash
+# To untrack a folder (use -r for recursive):
+git rm -r --cached path/to/folder/
+
+# To untrack a single file:
+git rm --cached path/to/file.env
+```
+*Note: The `--cached` flag is critical. It tells Git to delete the file/folder ONLY from the Git repository index, leaving your physical local files untouched.*
+
+### 3. Commit the change
+Stage and commit the untracking changes:
+```bash
+git add .gitignore
+git commit -m "docs: remove private folder from git tracking"
+```
+
+### 4. Push to GitHub
+```bash
+git push origin <branch-name>
+```
+
+**Result:** The file or folder is deleted from your GitHub repository online, but it remains safe and active in your local code editor!
