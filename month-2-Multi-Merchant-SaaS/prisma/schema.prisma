@@ -7,97 +7,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// 🏷️ Predefined role levels for controlling user permissions
+// ==========================================
+// 🏷️ ENUMS & ROLE DEFINITIONS
+// ==========================================
+
+// Platform-level role for controlling basic user access
 enum Role {
   CUSTOMER // Standard buyer account with limited access
-  SELLER   // Merchant account allowed to list and manage products
-  ADMIN    // Super-administrator account with full system access
+  SELLER   // Merchant account allowed to own/manage stores
+  ADMIN    // Super-administrator account with full platform control
 }
 
-// 👤 Core user authentication and credentials table
-model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  password String
-  role Role @default(CUSTOMER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile   Profile? 
-  reviews   Review[]                              // 1:N relationship: A user can write many reviews
-  cartItems CartItem[]                            // 1:N relationship: User's active shopping cart items
-  orders    Order[]                               // 1:N relationship: User's historical checkouts
+// Tenant-level role for permissions inside a single merchant store
+enum StoreRole {
+  OWNER
+  MANAGER
+  STAFF
 }
 
-// 📄 Personal demographic and location metadata details for a user
-model Profile {
-  id         Int      @id @default(autoincrement()) // Primary key, auto-incremented by the database
-  firstName  String                                // User's first name
-  lastName   String                                // User's last name
-  phone      String?                               // Nullable phone contact string
-  avatarUrl  String?                               // Nullable URL pointing to profile image upload
-  street     String                                // Physical street billing/shipping address
-  city       String                                // Home city address
-  state      String?                               // Optional state or region code
-  postalCode String                                // Postal/ZIP code for routing shipping
-  country    String                                // Location country name
-  userId     Int      @unique                      // Foreign key referencing User.id, unique constraint enforces 1:1
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship map with Cascade delete
-  createdAt  DateTime @default(now())              // Track when the profile was generated
-  updatedAt  DateTime @updatedAt                   // Auto-updated timestamp on profile changes
-}
-
-// 📁 Category model for organizing products
-model Category {
-  id          Int       @id @default(autoincrement()) // Auto-incrementing primary key
-  name        String    @unique                      // Unique display name (e.g. "Electronics")
-  slug        String    @unique                      // Unique URL slug for routing/SEO (e.g. "electronics")
-  description String?                                // Optional category details
-  products    Product[]                              // 1:N relationship: A category contains many products
-  createdAt   DateTime  @default(now())              // Timestamp when category is created
-  updatedAt   DateTime  @updatedAt                   // Auto-updated timestamp on modification
-}
-
-// 📦 Product model representing catalog inventory items
-model Product {
-  id          Int         @id @default(autoincrement()) // Auto-incrementing primary key
-  name        String                                    // Product display name
-  slug        String      @unique                       // Unique URL slug for SEO lookup (e.g. "iphone-15-pro")
-  description String                                    // Markdown or text description of product
-  price       Decimal                                   // Arbitrary precision decimal for currency (avoids float inaccuracies)
-  stock       Int         @default(0)                   // Quantity available in inventory
-  images      String[]                                  // Postgres scalar list storing image URLs
-  
-  // Category Link
-  categoryId  Int                                       // Foreign key reference to Category
-  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict) // Linked category model with Restrict action
-  
-  reviews     Review[]                                  // 1:N relationship: A product can have many reviews
-  cartItems   CartItem[]                                // 1:N relationship: Links to active shopping carts
-  orderItems  OrderItem[]                               // 1:N relationship: Links to historical invoice items
-  
-  createdAt   DateTime    @default(now())              // Timestamp when product is added
-  updatedAt   DateTime    @updatedAt                   // Auto-updated timestamp on modification
-}
-
-// 💬 Review model representing product feedback from users
-model Review {
-  id        Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  rating    Int                                   // Score given to the product (e.g., 1 to 5)
-  comment   String                                // Written review text
-  
-  // User Link (Who wrote it)
-  userId    Int                                   // Foreign key referencing User.id
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relate to User. Cascade deletes reviews on User deletion.
-  
-  // Product Link (What product it reviews)
-  productId Int                                   // Foreign key referencing Product.id
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // Relate to Product. Cascade deletes reviews on Product deletion.
-  
-  createdAt DateTime @default(now())              // Timestamp when review is posted
-  updatedAt DateTime @updatedAt                   // Auto-updated timestamp on modification
-}
-
-// 🛒 Order status levels
+// Order fulfillment and payment status levels
 enum OrderStatus {
   PENDING   // Order created, awaiting payment
   PAID      // Payment processed successfully
@@ -106,41 +34,203 @@ enum OrderStatus {
   CANCELLED // Refunded or voided
 }
 
-// 🛒 CartItem model for temporary active shopping baskets (Junction Table)
+// ==========================================
+// 👤 USER MANAGEMENT & SECURITY
+// ==========================================
+
+// Core user authentication and credentials table
+model User {
+  id               Int            @id @default(autoincrement())
+  email            String         @unique
+  password         String
+  role             Role           @default(CUSTOMER)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  profile          Profile?
+  ownedStores      Store[]        @relation("StoreOwner")
+  storeMemberships StoreMember[]
+  reviews          Review[]       // Reviews written by this user
+  cartItems        CartItem[]     // Active cart items across stores
+  orders           Order[]        // Orders placed by this user
+}
+
+// Personal demographic and location metadata details for a user
+model Profile {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  phone      String?
+  avatarUrl  String?
+  street     String
+  city       String
+  state      String?
+  postalCode String
+  country    String
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ==========================================
+// 🏢 MULTI-TENANT MERCHANTS (STORES)
+// ==========================================
+
+// Tenant Store representing individual merchant shops
+model Store {
+  id          Int           @id @default(autoincrement())
+  name        String
+  slug        String        @unique // Unique URL slug for store page (e.g. "nike-official")
+  description String?
+  ownerId     Int
+  owner       User          @relation("StoreOwner", fields: [ownerId], references: [id])
+  members     StoreMember[]
+  products    Product[]
+  categories  Category[]
+  orders      Order[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// Junction table linking users to stores with specific roles
+model StoreMember {
+  id        Int       @id @default(autoincrement())
+  storeId   Int
+  userId    Int
+  role      StoreRole @default(STAFF)
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([storeId, userId])
+}
+
+// ==========================================
+// 📂 PRODUCT CATALOG & TAXONOMIES
+// ==========================================
+
+// Category model for organizing products, supporting nested structures
+model Category {
+  id          Int        @id @default(autoincrement())
+  storeId     Int
+  store       Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String
+  description String?
+  
+  // Self-referential 1:N relationship for nested subcategories
+  parentId    Int?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Category[] @relation("SubCategories")
+  
+  products    Product[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([storeId, slug]) // Slug must be unique within a single store
+  @@unique([storeId, name]) // Category name must be unique within a single store
+}
+
+// Product model representing inventory items sold by a specific store
+model Product {
+  id          Int              @id @default(autoincrement())
+  storeId     Int
+  store       Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String
+  description String
+  price       Decimal
+  stock       Int              @default(0)
+  images      String[]
+  
+  categoryId  Int
+  category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  
+  reviews     Review[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  
+  // Self-referential N:M relationship for related products / bundles
+  relatedTo   RelatedProduct[] @relation("ProductOrigin")
+  relatedFrom RelatedProduct[] @relation("ProductRelated")
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([storeId, slug]) // Product slug must be unique within the store
+}
+
+// Junction table mapping related product recommendations
+model RelatedProduct {
+  id             Int      @id @default(autoincrement())
+  productId      Int
+  relatedId      Int
+  product        Product  @relation("ProductOrigin", fields: [productId], references: [id], onDelete: Cascade)
+  relatedProduct Product  @relation("ProductRelated", fields: [relatedId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, relatedId])
+}
+
+// Product reviews left by buyers
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// 🛒 SHOPPING CARTS & CHECKOUT ORDERS
+// ==========================================
+
+// Temporary active shopping cart item (junction table linking user and product)
 model CartItem {
-  id        Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  userId    Int                                   // Foreign key referencing User.id
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Cascade delete: wipe cart if user is deleted
-  productId Int                                   // Foreign key referencing Product.id
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // Cascade delete: wipe cart item if product is deleted
-  quantity  Int      @default(1)                  // Quantity of this product in cart
-  createdAt DateTime @default(now())              // Timestamp when added to cart
-  updatedAt DateTime @updatedAt                   // Auto-updated timestamp on quantity modifications
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([userId, productId])                  // Enforces unique product per user cart (preventing duplicate rows)
+  @@unique([userId, productId])
 }
 
-// 📄 Order model representing the main invoice header
+// Order model representing a store checkout transaction
 model Order {
-  id          Int         @id @default(autoincrement()) // Auto-incrementing primary key
-  userId      Int                                       // Foreign key referencing User.id
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade) // Cascade delete: delete orders if user is wiped
-  totalAmount Decimal                                   // Total invoice price (precision Decimal)
-  status      OrderStatus @default(PENDING)             // Current shipping/payment status
-  orderItems  OrderItem[]                               // 1:N relation pointing to order line items
-  createdAt   DateTime    @default(now())              // Timestamp when order was placed
-  updatedAt   DateTime    @updatedAt                   // Auto-updated timestamp when order status changes
+  id          Int         @id @default(autoincrement())
+  storeId     Int
+  store       Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalAmount Decimal
+  status      OrderStatus @default(PENDING)
+  orderItems  OrderItem[]
+  
+  // Store-scoped ordering sequence (e.g. Store 1 has orders #1, #2; Store 2 has #1, #2)
+  orderNumber Int
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([storeId, orderNumber]) // Enforces unique sequence number per tenant store
 }
 
-// 🧾 OrderItem model representing explicit junction for detailed line items
+// Explicit line items in an order invoice
 model OrderItem {
-  id              Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  orderId         Int                                   // Foreign key referencing Order.id
-  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade) // Cascade delete: delete items if parent invoice is deleted
-  productId       Int                                   // Foreign key referencing Product.id
-  product         Product  @relation(fields: [productId], references: [id], onDelete: Restrict) // Restrict delete: prevent catalog product from being deleted if it has sales history!
-  quantity        Int                                   // Quantity purchased
-  priceAtPurchase Decimal                               // Frozen price snapshot at point of transaction
-  createdAt       DateTime @default(now())              // Timestamp when record was created
-  updatedAt       DateTime @updatedAt                   // Auto-updated timestamp
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity        Int
+  priceAtPurchase Decimal
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
