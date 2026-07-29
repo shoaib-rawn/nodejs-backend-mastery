@@ -52,6 +52,7 @@ model User {
   reviews          Review[]       // Reviews written by this user
   cartItems        CartItem[]     // Active cart items across stores
   orders           Order[]        // Orders placed by this user
+  refreshTokens    RefreshToken[] // Active sessions for token rotation
 }
 
 // Personal demographic and location metadata details for a user
@@ -234,3 +235,14 @@ model OrderItem {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+// RefreshToken model for session management and token rotation
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+

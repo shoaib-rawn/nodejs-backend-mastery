@@ -386,3 +386,34 @@ git add package-lock.json
 git commit -m "chore: resolve package-lock.json merge conflict"
 ```
 
+---
+
+## 13. Renaming Git Branches Safely (Local & Remote)
+
+**The Scenario:**
+You created a branch, wrote some commits, and pushed it to GitHub. Later, you realize you made a typo in the branch name (e.g. typing `feat/day09-jwt` instead of `feature/day09-jwt-rotation`). You want to rename the branch both locally and on GitHub without losing your commits.
+
+**The Solution:**
+You can rename your active branch locally, push the new branch, and delete the old name from GitHub:
+
+### 1. Rename your local branch
+Switch to the branch you want to rename, then run:
+```bash
+# Rename the current active branch:
+git branch -m <new-branch-name>
+```
+
+### 2. Push the new branch and reset upstream
+Push the renamed branch to GitHub and link it:
+```bash
+git push origin -u <new-branch-name>
+```
+
+### 3. Delete the old branch from GitHub
+Remove the old branch name from the remote repository:
+```bash
+git push origin --delete <old-branch-name>
+```
+*Note: Your local commits are fully preserved; you have simply renamed the label pointing to them.*
+
+
