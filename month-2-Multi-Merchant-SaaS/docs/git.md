@@ -353,3 +353,36 @@ git push origin <branch-name>
 ```
 
 **Result:** The file or folder is deleted from your GitHub repository online, but it remains safe and active in your local code editor!
+
+---
+
+## 12. Resolving package-lock.json Merge Conflicts Safely
+
+**The Scenario:**
+You run `git pull` or merge a branch, and Git warns of a merge conflict in `package-lock.json`. The file contains thousands of lines of code, making it impossible to resolve manually using VS Code conflict markers.
+
+**Why it happens:**
+Both branches added or updated different packages, which edited the auto-generated `package-lock.json` file. Since both edited the same files, Git got confused.
+
+**The Solution (Rebuilding the Lock File):**
+Do not attempt to fix `package-lock.json` manually! Instead, let `npm` automatically rebuild it:
+
+### 1. Checkout the project's version of the lock file
+We discard the conflict markers and reset the file back to your branch's original state:
+```bash
+git checkout --ours package-lock.json
+```
+
+### 2. Run npm install to merge changes automatically
+Run a fresh install. `npm` will read the updated `package.json` (which contains the combined list of dependencies from both branches) and automatically rebuild a clean, non-conflicted `package-lock.json`:
+```bash
+npm install
+```
+
+### 3. Commit the resolved lock file
+Stage the clean file and finalize the merge:
+```bash
+git add package-lock.json
+git commit -m "chore: resolve package-lock.json merge conflict"
+```
+

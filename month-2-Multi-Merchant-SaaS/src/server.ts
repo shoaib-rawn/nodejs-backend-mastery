@@ -1,10 +1,6 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
+import { env } from './config/env';
 import app from './app';
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 E-Commerce API Server listening on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+app.listen(env.PORT, () => {
+  console.log(`🚀 E-Commerce API Server listening on port ${env.PORT} in ${env.NODE_ENV} mode`);
 });
