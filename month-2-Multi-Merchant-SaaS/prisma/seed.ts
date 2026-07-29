@@ -1,4 +1,5 @@
 import { PrismaClient, Role, StoreRole, OrderStatus } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -20,6 +21,12 @@ async function main() {
 
   console.log('🧹 Cleaned existing database records.');
 
+  // Pre-hash passwords for seed users
+  const adminHash = await bcrypt.hash('adminpassword123', 12);
+  const sellerHash = await bcrypt.hash('sellerpassword123', 12);
+  const staffHash = await bcrypt.hash('staffpassword123', 12);
+  const customerHash = await bcrypt.hash('customerpassword123', 12);
+
   // ==========================================
   // 👥 CREATE USERS & PROFILES
   // ==========================================
@@ -28,7 +35,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       email: 'admin@platform.com',
-      password: 'adminpassword123', // Will be hashed in Day 08
+      password: adminHash,
       role: Role.ADMIN,
       profile: {
         create: {
@@ -48,7 +55,7 @@ async function main() {
   const seller1 = await prisma.user.create({
     data: {
       email: 'owner@techworld.com',
-      password: 'sellerpassword123',
+      password: sellerHash,
       role: Role.SELLER,
       profile: {
         create: {
@@ -67,7 +74,7 @@ async function main() {
   const seller2 = await prisma.user.create({
     data: {
       email: 'owner@fashionhub.com',
-      password: 'sellerpassword123',
+      password: sellerHash,
       role: Role.SELLER,
       profile: {
         create: {
@@ -87,7 +94,7 @@ async function main() {
   const staff1 = await prisma.user.create({
     data: {
       email: 'staff@techworld.com',
-      password: 'staffpassword123',
+      password: staffHash,
       role: Role.SELLER,
       profile: {
         create: {
@@ -107,7 +114,7 @@ async function main() {
   const customer1 = await prisma.user.create({
     data: {
       email: 'buyer1@gmail.com',
-      password: 'customerpassword123',
+      password: customerHash,
       role: Role.CUSTOMER,
       profile: {
         create: {
@@ -126,7 +133,7 @@ async function main() {
   const customer2 = await prisma.user.create({
     data: {
       email: 'buyer2@gmail.com',
-      password: 'customerpassword123',
+      password: customerHash,
       role: Role.CUSTOMER,
       profile: {
         create: {

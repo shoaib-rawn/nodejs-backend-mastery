@@ -1,8 +1,9 @@
 import pg from 'pg';
+import { env } from './env';
 
-// 1. Create a PostgreSQL connection pool using DATABASE_URL from .env
+// 1. Create a PostgreSQL connection pool using DATABASE_URL from our validated config
 export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: env.DATABASE_URL
 });
 
 // 2. Simple helper function to test if PostgreSQL is connected

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { env } from './env';
 
 /**
  * Shared singleton instance of the PrismaClient.
@@ -7,5 +8,5 @@ import { PrismaClient } from '@prisma/client';
  */
 export const prisma = new PrismaClient({
   // Enable query logging in development mode for easy debugging
-  log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error']
+  log: env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error']
 });
