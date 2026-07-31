@@ -4,6 +4,8 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { checkDbConnection } from './config/db.config';
 import authRouter from './routes/auth.routes';
+import storeRouter from './routes/store.routes';
+import productRouter from './routes/product.routes';
 
 const app: Application = express();
 
@@ -15,6 +17,8 @@ app.use(cookieParser()); // Enables reading incoming cookies from request payloa
 
 // Route Registration
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/stores', storeRouter);
+app.use('/api/v1/products', productRouter);
 
 // Healthcheck Route (Tests Express API & PostgreSQL Connection)
 app.get('/api/v1/health', async (req: Request, res: Response) => {

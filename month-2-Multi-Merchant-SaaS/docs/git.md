@@ -446,5 +446,38 @@ git commit -m "merge: integrate origin/shoaibs-dev updates"
 ```
 *Tip: Keep your feature branch updated daily to minimize large conflicts when submitting pull requests.*
 
+---
+
+## 15. Stashing Uncommitted Changes Safely
+
+**The Scenario:**
+You are in the middle of editing product controllers inside your feature branch, but your teammate asks you to review a bug on the main dev branch `shoaibs-dev` immediately. You try to switch branches, but Git blocks you because your current changes would be overwritten. You do not want to make a messy "half-done" commit just to switch branches.
+
+**The Solution:**
+You can temporarily save your work in Git's clipboard (the stash) and restore it later:
+
+### 1. Stash your current changes
+Save all modified tracked files to a temporary stack:
+```bash
+git stash
+```
+*Note: If you have new, untracked files you also want to stash, use `git stash -u`.*
+
+### 2. Switch branches and do your urgent work
+Your working directory is now clean. Switch branches safely:
+```bash
+git checkout shoaibs-dev
+# ... perform reviews or fixes ...
+```
+
+### 3. Switch back and restore your stash
+Switch back to your feature branch, then retrieve your stashed changes:
+```bash
+git checkout feature/day11-store-product-crud
+git stash pop
+```
+*Note: `git stash pop` applies the changes and removes them from the stash stack.*
+
+
 
 
