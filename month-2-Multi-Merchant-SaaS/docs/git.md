@@ -416,4 +416,68 @@ git push origin --delete <old-branch-name>
 ```
 *Note: Your local commits are fully preserved; you have simply renamed the label pointing to them.*
 
+---
+
+## 14. Integrating Development Updates into your Feature Branch
+
+**The Scenario:**
+You are working on a local feature branch `feature/day10-rbac` that you created in the morning. In the afternoon, a teammate merges a database fix into the shared `shoaibs-dev` branch on GitHub. You need to pull their database fix into your active feature branch so you are coding on top of the latest updates.
+
+**The Solution:**
+You can fetch the remote branch status and merge the shared development branch into your active branch:
+
+### 1. Fetch the latest metadata from GitHub
+Before merging, download the latest branch states from the remote server:
+```bash
+git fetch origin
+```
+
+### 2. Merge the integration branch into your active branch
+Make sure you are standing on your feature branch, then run:
+```bash
+git merge origin/shoaibs-dev
+```
+
+### 3. Resolve conflicts (if any)
+If you and your teammate edited the same line of code, Git will pause and ask you to select which lines to keep. Open the conflicting files, choose the correct lines, then finalize the merge:
+```bash
+git add <conflicting-file-path>
+git commit -m "merge: integrate origin/shoaibs-dev updates"
+```
+*Tip: Keep your feature branch updated daily to minimize large conflicts when submitting pull requests.*
+
+---
+
+## 15. Stashing Uncommitted Changes Safely
+
+**The Scenario:**
+You are in the middle of editing product controllers inside your feature branch, but your teammate asks you to review a bug on the main dev branch `shoaibs-dev` immediately. You try to switch branches, but Git blocks you because your current changes would be overwritten. You do not want to make a messy "half-done" commit just to switch branches.
+
+**The Solution:**
+You can temporarily save your work in Git's clipboard (the stash) and restore it later:
+
+### 1. Stash your current changes
+Save all modified tracked files to a temporary stack:
+```bash
+git stash
+```
+*Note: If you have new, untracked files you also want to stash, use `git stash -u`.*
+
+### 2. Switch branches and do your urgent work
+Your working directory is now clean. Switch branches safely:
+```bash
+git checkout shoaibs-dev
+# ... perform reviews or fixes ...
+```
+
+### 3. Switch back and restore your stash
+Switch back to your feature branch, then retrieve your stashed changes:
+```bash
+git checkout feature/day11-store-product-crud
+git stash pop
+```
+*Note: `git stash pop` applies the changes and removes them from the stash stack.*
+
+
+
 
