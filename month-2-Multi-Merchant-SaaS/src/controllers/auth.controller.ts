@@ -1,12 +1,97 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma.config";
-import { comparePassword } from "../utils/password";
+import { comparePassword, hashPassword } from "../utils/password";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
 } from "../utils/jwt";
 import { env } from "../config/env";
+
+/* ==========================================================
+   REGISTER
+   Flow:
+   1. Get Input
+   2. Validate
+   3. Check Uniqueness
+   4. Hash Password
+   5. Create User & Profile
+   6. Return Response
+========================================================== */
+
+export async function register(req: Request, res: Response) {
+  try {
+    // 1. Get Input
+    const { email, password, firstName, lastName, role } = req.body;
+
+    // 2. Validate
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Email, password, first name, and last name are required.",
+      });
+    }
+
+    // 3. Check Uniqueness
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Email is already registered.",
+      });
+    }
+
+    // 4. Hash Password
+    const hashedPassword = await hashPassword(password);
+
+    // 5. Create User & Profile
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role: role || "CUSTOMER",
+        profile: {
+          create: {
+            firstName,
+            lastName,
+            street: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+          },
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    // 6. Return Response
+    return res.status(201).json({
+      status: "success",
+      user: newUser,
+    });
+
+  } catch (error: any) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+}
+
 
 /* ==========================================================
    LOGIN

@@ -416,4 +416,35 @@ git push origin --delete <old-branch-name>
 ```
 *Note: Your local commits are fully preserved; you have simply renamed the label pointing to them.*
 
+---
+
+## 14. Integrating Development Updates into your Feature Branch
+
+**The Scenario:**
+You are working on a local feature branch `feature/day10-rbac` that you created in the morning. In the afternoon, a teammate merges a database fix into the shared `shoaibs-dev` branch on GitHub. You need to pull their database fix into your active feature branch so you are coding on top of the latest updates.
+
+**The Solution:**
+You can fetch the remote branch status and merge the shared development branch into your active branch:
+
+### 1. Fetch the latest metadata from GitHub
+Before merging, download the latest branch states from the remote server:
+```bash
+git fetch origin
+```
+
+### 2. Merge the integration branch into your active branch
+Make sure you are standing on your feature branch, then run:
+```bash
+git merge origin/shoaibs-dev
+```
+
+### 3. Resolve conflicts (if any)
+If you and your teammate edited the same line of code, Git will pause and ask you to select which lines to keep. Open the conflicting files, choose the correct lines, then finalize the merge:
+```bash
+git add <conflicting-file-path>
+git commit -m "merge: integrate origin/shoaibs-dev updates"
+```
+*Tip: Keep your feature branch updated daily to minimize large conflicts when submitting pull requests.*
+
+
 

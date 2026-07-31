@@ -112,8 +112,6 @@ async function runTests() {
   //   }
   // }
 
-} // Closes async function runTests()
-
-runTests()
-  .catch(err => console.error('❌ Tests crashed:', err))
-  .finally(async () => await prisma.$disconnect());
+  runTests()
+    .catch(err => console.error('❌ Tests crashed:', err))
+    .finally(async () => await prisma.$disconnect()); } 
