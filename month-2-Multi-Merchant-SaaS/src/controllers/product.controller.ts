@@ -91,7 +91,90 @@ export async function createProduct(req: Request, res: Response) {
 }
 
 /**
- * Lists all products belonging to a Store (Public).
+ * Recursively fetches a category ID and all its descendant category IDs.
+ */
+export async function getCategoryDescendants(categoryId: number): Promise<number[]> {
+  const categoryIds: number[] = [categoryId];
+
+  const children = await prisma.category.findMany({
+    where: { parentId: categoryId },
+    select: { id: true },
+  });
+
+  for (const child of children) {
+    const childDescendants = await getCategoryDescendants(child.id);
+    categoryIds.push(...childDescendants);
+  }
+
+  return categoryIds;
+}
+
+/**
+ * Builds Prisma 'where' filter clause based on query parameters.
+ */
+async function buildProductWhereClause(query: any, baseWhere: Prisma.ProductWhereInput = {}): Promise<Prisma.ProductWhereInput> {
+  const where: Prisma.ProductWhereInput = { ...baseWhere };
+
+  // 1. Text Search (name or description)
+  if (query.search) {
+    const searchString = String(query.search);
+    where.OR = [
+      { name: { contains: searchString, mode: 'insensitive' } },
+      { description: { contains: searchString, mode: 'insensitive' } },
+    ];
+  }
+
+  // 2. Price Range Filter
+  if (query.minPrice !== undefined || query.maxPrice !== undefined) {
+    where.price = {};
+    if (query.minPrice !== undefined && !isNaN(Number(query.minPrice))) {
+      where.price.gte = new Prisma.Decimal(query.minPrice);
+    }
+    if (query.maxPrice !== undefined && !isNaN(Number(query.maxPrice))) {
+      where.price.lte = new Prisma.Decimal(query.maxPrice);
+    }
+  }
+
+  // 3. Category Filter with Recursive Descendant Expansion
+  if (query.categoryId !== undefined && !isNaN(Number(query.categoryId))) {
+    const rootCategoryId = Number(query.categoryId);
+    const descendantIds = await getCategoryDescendants(rootCategoryId);
+    where.categoryId = { in: descendantIds };
+  }
+
+  // 4. Stock Status Filter
+  if (query.stockStatus) {
+    if (query.stockStatus === 'in-stock') {
+      where.stock = { gt: 0 };
+    } else if (query.stockStatus === 'out-of-stock') {
+      where.stock = { equals: 0 };
+    }
+  }
+
+  return where;
+}
+
+/**
+ * Determines sorting order object for Prisma queries.
+ */
+function buildProductOrderBy(sortBy?: string): Prisma.ProductOrderByWithRelationInput {
+  switch (sortBy) {
+    case 'price_asc':
+      return { price: 'asc' };
+    case 'price_desc':
+      return { price: 'desc' };
+    case 'name_asc':
+      return { name: 'asc' };
+    case 'name_desc':
+      return { name: 'desc' };
+    case 'createdAt_desc':
+    default:
+      return { createdAt: 'desc' };
+  }
+}
+
+/**
+ * Lists products belonging to a specific Store with advanced filtering, sorting, and pagination (Public).
  */
 export async function getStoreProducts(req: Request, res: Response) {
   try {
@@ -100,17 +183,46 @@ export async function getStoreProducts(req: Request, res: Response) {
       return res.status(400).json({ status: 'fail', message: 'Invalid Store ID.' });
     }
 
-    const products = await prisma.product.findMany({
-      where: { storeId },
-      include: {
-        category: {
-          select: { id: true, name: true, slug: true },
+    // 1. Build Filter Conditions
+    const where = await buildProductWhereClause(req.query, { storeId });
+
+    // 2. Build Sorting Order
+    const orderBy = buildProductOrderBy(String(req.query.sortBy || 'createdAt_desc'));
+
+    // 3. Parse Pagination Parameters
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
+    const skip = (page - 1) * limit;
+
+    // 4. Execute Parallel Queries (Total Count + Paginated Products)
+    const [total, products] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+          store: {
+            select: { id: true, name: true, slug: true },
+          },
         },
-      },
-    });
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit) || 1;
 
     return res.status(200).json({
       status: 'success',
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
       results: products.length,
       products,
     });
@@ -118,6 +230,62 @@ export async function getStoreProducts(req: Request, res: Response) {
     return res.status(500).json({
       status: 'error',
       message: error.message || 'Failed to retrieve products.',
+    });
+  }
+}
+
+/**
+ * Lists global products across all stores with advanced filtering, sorting, and pagination (Public).
+ */
+export async function getGlobalProducts(req: Request, res: Response) {
+  try {
+    // 1. Build Filter Conditions (Global platform scope)
+    const where = await buildProductWhereClause(req.query);
+
+    // 2. Build Sorting Order
+    const orderBy = buildProductOrderBy(String(req.query.sortBy || 'createdAt_desc'));
+
+    // 3. Parse Pagination Parameters
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 10));
+    const skip = (page - 1) * limit;
+
+    // 4. Execute Parallel Queries
+    const [total, products] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+          store: {
+            select: { id: true, name: true, slug: true },
+          },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit) || 1;
+
+    return res.status(200).json({
+      status: 'success',
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
+      results: products.length,
+      products,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 'error',
+      message: error.message || 'Failed to retrieve global products.',
     });
   }
 }
