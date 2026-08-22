@@ -1,12 +1,13 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import { protect, authorizePlatformRoles, authorizeStoreRoles } from '../middlewares/auth.middleware';
 import { createStore, updateStore, deleteStore } from '../controllers/store.controller';
-import { createProduct, getStoreProducts, updateProduct, deleteProduct } from '../controllers/product.controller';
+import { createProduct, getStoreProducts, updateProduct, deleteProduct, uploadProductImages, deleteProductImage } from '../controllers/product.controller';
+import { upload } from '../middlewares/upload.middleware';
 
 const router = Router();
 
 // ==========================================
-// 🏢 STORE CRUD ENDPOINTS
+// 🏬 STORE CRUD ENDPOINTS
 // ==========================================
 
 // Create Store (restricted to Sellers and Admins)
@@ -65,6 +66,27 @@ router.delete(
   protect,
   authorizeStoreRoles('OWNER', 'ADMIN'),
   deleteProduct
+);
+
+// ==========================================
+// 🖼️ PRODUCT IMAGES ENDPOINTS
+// ==========================================
+
+// Upload Product Images (Store Owners & Admins, max 5 images)
+router.post(
+  '/:storeId/products/:id/images',
+  protect,
+  authorizeStoreRoles('OWNER', 'ADMIN'),
+  upload.array('images', 5),
+  uploadProductImages
+);
+
+// Delete Product Image (Store Owners & Admins)
+router.delete(
+  '/:storeId/products/:id/images',
+  protect,
+  authorizeStoreRoles('OWNER', 'ADMIN'),
+  deleteProductImage
 );
 
 export default router;

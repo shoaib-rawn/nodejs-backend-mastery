@@ -433,3 +433,118 @@ export async function deleteProduct(req: Request, res: Response) {
     });
   }
 }
+
+import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary.utils';
+
+/**
+ * Uploads one or multiple product images to Cloudinary and attaches URLs to Product record.
+ */
+export async function uploadProductImages(req: Request, res: Response) {
+  try {
+    const storeId = Number(req.params.storeId);
+    const productId = Number(req.params.id);
+
+    if (isNaN(storeId) || isNaN(productId)) {
+      return res.status(400).json({ status: 'fail', message: 'Invalid ID parameters.' });
+    }
+
+    // 1. Verify Product exists and belongs to target store
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product || product.storeId !== storeId) {
+      return res.status(404).json({ status: 'fail', message: 'Product not found in this store.' });
+    }
+
+    // 2. Extract uploaded files from req.files (Multer)
+    const files = req.files as Express.Multer.File[];
+    if (!files || files.length === 0) {
+      return res.status(400).json({ status: 'fail', message: 'Please provide at least one image file.' });
+    }
+
+    // 3. Upload files to Cloudinary in parallel
+    const uploadPromises = files.map((file) => uploadToCloudinary(file.buffer, `multi-merchant-saas/store-${storeId}/products`));
+    const uploadResults = await Promise.all(uploadPromises);
+
+    const newImageUrls = uploadResults.map((r) => r.secure_url);
+    const updatedImages = [...product.images, ...newImageUrls];
+
+    // 4. Update Product images in PostgreSQL
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: { images: updatedImages },
+      include: {
+        category: { select: { id: true, name: true, slug: true } },
+        store: { select: { id: true, name: true, slug: true } },
+      },
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Product images uploaded successfully.',
+      uploadedImages: newImageUrls,
+      product: updatedProduct,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 'error',
+      message: error.message || 'Failed to upload product images.',
+    });
+  }
+}
+
+/**
+ * Deletes a specific product image URL from PostgreSQL and Cloudinary.
+ */
+export async function deleteProductImage(req: Request, res: Response) {
+  try {
+    const storeId = Number(req.params.storeId);
+    const productId = Number(req.params.id);
+    const { imageUrl } = req.body;
+
+    if (isNaN(storeId) || isNaN(productId)) {
+      return res.status(400).json({ status: 'fail', message: 'Invalid ID parameters.' });
+    }
+
+    if (!imageUrl || typeof imageUrl !== 'string') {
+      return res.status(400).json({ status: 'fail', message: 'imageUrl string is required in request body.' });
+    }
+
+    // 1. Verify Product exists and belongs to target store
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product || product.storeId !== storeId) {
+      return res.status(404).json({ status: 'fail', message: 'Product not found in this store.' });
+    }
+
+    // 2. Check if image URL exists in product images array
+    if (!product.images.includes(imageUrl)) {
+      return res.status(400).json({ status: 'fail', message: 'Specified image URL does not exist on this product.' });
+    }
+
+    // 3. Remove image URL from array
+    const updatedImages = product.images.filter((url) => url !== imageUrl);
+
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: { images: updatedImages },
+    });
+
+    // 4. Delete asset from Cloudinary (Async background cleanup)
+    deleteFromCloudinary(imageUrl).catch((err) => console.error('Cloudinary delete error:', err));
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Product image deleted successfully.',
+      product: updatedProduct,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      status: 'error',
+      message: error.message || 'Failed to delete product image.',
+    });
+  }
+}
