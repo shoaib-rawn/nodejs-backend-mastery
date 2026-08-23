@@ -23,7 +23,7 @@
 - [x] **Day 11:** Zod Early Request Validation & Store/Product Management CRUD APIs
 - [x] **Day 12:** Product Search, Filtering, Sorting & Offset Pagination
 - [x] **Day 13:** Production Cloud Image Uploads (Cloudinary SDK + Multer)
-- [ ] **Day 14:** Multi-Tenant Shopping Cart Management API
+- [x] **Day 14:** Multi-Tenant Shopping Cart Management API
 
 ---
 

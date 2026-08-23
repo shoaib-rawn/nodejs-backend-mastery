@@ -481,3 +481,22 @@ git stash pop
 
 
 
+
+
+## Day 14 Scenario: Git Cherry-Pick (Applying Specific Commits Across Branches)
+
+### Real-World Context
+You implemented a critical bug fix on a hotfix branch and need to apply that exact commit onto your current `feature/day14-shopping-cart` branch without merging the whole hotfix branch.
+
+### Commands & Syntax
+```bash
+# 1. View commit history on hotfix branch
+git log --oneline -n 5
+
+# 2. Cherry-pick specific commit hash into current branch
+git cherry-pick <commit-hash>
+
+# 3. Resolve conflicts if any, stage changes, and continue
+git add .
+git cherry-pick --continue
+```

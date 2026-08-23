@@ -22,7 +22,7 @@ A production-grade, multi-tenant e-commerce backend platform built with **Node.j
 - [x] **Day 11:** Zod Early Request Validation & Store/Product Management CRUD APIs
 - [x] **Day 12:** Product Search, Filtering, Sorting & Offset Pagination
 - [x] **Day 13:** Production Cloud Image Uploads (Cloudinary SDK + Multer)
-- [ ] **Day 14:** Multi-Tenant Shopping Cart Management API
+- [x] **Day 14:** Multi-Tenant Shopping Cart Management API (`/api/v1/stores/:storeId/cart` - Add, Quantity Upsert, Totals Aggregation, Item Delete, Cart Clear)
 
 ### 🟢 Week 3: Orders, Transactions & Payment Webhooks
 - [ ] **Day 15:** Order Checkout API & Prisma Transactions (Atomic Stock Decrements)
