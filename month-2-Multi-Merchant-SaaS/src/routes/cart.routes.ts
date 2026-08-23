@@ -1,27 +1,25 @@
 import { Router } from 'express';
-import { authenticate } from '../middlewares/auth.js';
-import { validateRequest } from '../middlewares/validate.js';
-import { addToCartSchema, updateCartQuantitySchema } from '../validations/cart.validation.js';
+import { protect } from '../middlewares/auth.middleware';
 import {
   addToCart,
   getCart,
   updateCartItemQuantity,
   removeCartItem,
   clearCart
-} from '../controllers/cart.controller.js';
+} from '../controllers/cart.controller';
 
 const router = Router({ mergeParams: true });
 
 // Protect all cart routes with JWT authentication
-router.use(authenticate);
+router.use(protect);
 
 router.route('/')
   .get(getCart)
-  .post(validateRequest(addToCartSchema), addToCart)
+  .post(addToCart)
   .delete(clearCart);
 
 router.route('/:cartItemId')
-  .patch(validateRequest(updateCartQuantitySchema), updateCartItemQuantity)
+  .patch(updateCartItemQuantity)
   .delete(removeCartItem);
 
 export default router;

@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../middlewares/errorHandler.js';
+import { asyncHandler } from '../middlewares/errorHandler';
 import {
   addToCartService,
   getCartService,
   updateCartItemQuantityService,
   removeCartItemService,
   clearCartService
-} from '../services/cart.service.js';
+} from '../services/cart.service';
 
 export const addToCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const userId = (req as any).user.id;
   const storeId = parseInt(req.params.storeId, 10);
   const { productId, quantity } = req.body;
 
@@ -22,7 +22,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const userId = (req as any).user.id;
   const storeId = parseInt(req.params.storeId, 10);
 
   const result = await getCartService(userId, storeId);
@@ -33,7 +33,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const updateCartItemQuantity = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const userId = (req as any).user.id;
   const storeId = parseInt(req.params.storeId, 10);
   const cartItemId = parseInt(req.params.cartItemId, 10);
   const { quantity } = req.body;
@@ -46,7 +46,7 @@ export const updateCartItemQuantity = asyncHandler(async (req: Request, res: Res
 });
 
 export const removeCartItem = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const userId = (req as any).user.id;
   const storeId = parseInt(req.params.storeId, 10);
   const cartItemId = parseInt(req.params.cartItemId, 10);
 
@@ -58,7 +58,7 @@ export const removeCartItem = asyncHandler(async (req: Request, res: Response) =
 });
 
 export const clearCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user!.id;
+  const userId = (req as any).user.id;
   const storeId = parseInt(req.params.storeId, 10);
 
   const result = await clearCartService(userId, storeId);
