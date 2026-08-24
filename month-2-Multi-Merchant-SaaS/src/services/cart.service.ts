@@ -1,5 +1,5 @@
-import { prisma } from '../config/prisma.config.js';
-import { AppError } from '../middlewares/errorHandler.js';
+import { prisma } from '../config/prisma.config';
+import { AppError } from '../middlewares/errorHandler';
 
 export async function addToCartService(userId: number, storeId: number, productId: number, quantity: number) {
   // 1. Verify product exists and belongs to target store tenant
