@@ -1,7 +1,12 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { checkDbConnection } from './config/db.config';
+import authRouter from './routes/auth.routes';
+import storeRouter from './routes/store.routes';
+import productRouter from './routes/product.routes';
+import cartRouter from './routes/cart.routes';
 
 const app: Application = express();
 
@@ -9,6 +14,13 @@ const app: Application = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser()); // Enables reading incoming cookies from request payloads
+
+// Route Registration
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/stores', storeRouter);
+app.use('/api/v1/stores/:storeId/cart', cartRouter);
+app.use('/api/v1/products', productRouter);
 
 // Healthcheck Route (Tests Express API & PostgreSQL Connection)
 app.get('/api/v1/health', async (req: Request, res: Response) => {

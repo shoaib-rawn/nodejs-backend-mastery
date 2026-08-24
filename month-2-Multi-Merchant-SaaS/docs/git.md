@@ -313,4 +313,190 @@ git push origin <branch-name>
 
 **Result**: You have successfully undone the buggy changes safely, and your team's Git histories remain perfectly synchronized!
 
+---
 
+## 11. Untracking Files Already Pushed (git rm --cached)
+
+**The Scenario:**
+You accidentally committed and pushed a private folder (like `preparation/` or `.agents/`) or a sensitive file (like `.env`) to GitHub. You added it to your `.gitignore` file, but Git is still tracking it and pushes any modifications to GitHub. You want to stop tracking it on GitHub but keep the physical files on your local machine.
+
+**Why it happens:**
+Adding a file to `.gitignore` only works for **untracked** files. If a file was already committed and pushed, Git will continue to track it because it remains in Git's tracking cache. 
+
+**The Solution:**
+You must manually tell Git to stop tracking the file/folder in its index cache, without deleting your local copy:
+
+### 1. Add the path to `.gitignore`
+Make sure the file or folder is added to `.gitignore` first (e.g. adding `.agents/` or `preparation/`).
+
+### 2. Remove the file/folder from Git tracking cache
+Run this command from the repository root:
+```bash
+# To untrack a folder (use -r for recursive):
+git rm -r --cached path/to/folder/
+
+# To untrack a single file:
+git rm --cached path/to/file.env
+```
+*Note: The `--cached` flag is critical. It tells Git to delete the file/folder ONLY from the Git repository index, leaving your physical local files untouched.*
+
+### 3. Commit the change
+Stage and commit the untracking changes:
+```bash
+git add .gitignore
+git commit -m "docs: remove private folder from git tracking"
+```
+
+### 4. Push to GitHub
+```bash
+git push origin <branch-name>
+```
+
+**Result:** The file or folder is deleted from your GitHub repository online, but it remains safe and active in your local code editor!
+
+---
+
+## 12. Resolving package-lock.json Merge Conflicts Safely
+
+**The Scenario:**
+You run `git pull` or merge a branch, and Git warns of a merge conflict in `package-lock.json`. The file contains thousands of lines of code, making it impossible to resolve manually using VS Code conflict markers.
+
+**Why it happens:**
+Both branches added or updated different packages, which edited the auto-generated `package-lock.json` file. Since both edited the same files, Git got confused.
+
+**The Solution (Rebuilding the Lock File):**
+Do not attempt to fix `package-lock.json` manually! Instead, let `npm` automatically rebuild it:
+
+### 1. Checkout the project's version of the lock file
+We discard the conflict markers and reset the file back to your branch's original state:
+```bash
+git checkout --ours package-lock.json
+```
+
+### 2. Run npm install to merge changes automatically
+Run a fresh install. `npm` will read the updated `package.json` (which contains the combined list of dependencies from both branches) and automatically rebuild a clean, non-conflicted `package-lock.json`:
+```bash
+npm install
+```
+
+### 3. Commit the resolved lock file
+Stage the clean file and finalize the merge:
+```bash
+git add package-lock.json
+git commit -m "chore: resolve package-lock.json merge conflict"
+```
+
+---
+
+## 13. Renaming Git Branches Safely (Local & Remote)
+
+**The Scenario:**
+You created a branch, wrote some commits, and pushed it to GitHub. Later, you realize you made a typo in the branch name (e.g. typing `feat/day09-jwt` instead of `feature/day09-jwt-rotation`). You want to rename the branch both locally and on GitHub without losing your commits.
+
+**The Solution:**
+You can rename your active branch locally, push the new branch, and delete the old name from GitHub:
+
+### 1. Rename your local branch
+Switch to the branch you want to rename, then run:
+```bash
+# Rename the current active branch:
+git branch -m <new-branch-name>
+```
+
+### 2. Push the new branch and reset upstream
+Push the renamed branch to GitHub and link it:
+```bash
+git push origin -u <new-branch-name>
+```
+
+### 3. Delete the old branch from GitHub
+Remove the old branch name from the remote repository:
+```bash
+git push origin --delete <old-branch-name>
+```
+*Note: Your local commits are fully preserved; you have simply renamed the label pointing to them.*
+
+---
+
+## 14. Integrating Development Updates into your Feature Branch
+
+**The Scenario:**
+You are working on a local feature branch `feature/day10-rbac` that you created in the morning. In the afternoon, a teammate merges a database fix into the shared `shoaibs-dev` branch on GitHub. You need to pull their database fix into your active feature branch so you are coding on top of the latest updates.
+
+**The Solution:**
+You can fetch the remote branch status and merge the shared development branch into your active branch:
+
+### 1. Fetch the latest metadata from GitHub
+Before merging, download the latest branch states from the remote server:
+```bash
+git fetch origin
+```
+
+### 2. Merge the integration branch into your active branch
+Make sure you are standing on your feature branch, then run:
+```bash
+git merge origin/shoaibs-dev
+```
+
+### 3. Resolve conflicts (if any)
+If you and your teammate edited the same line of code, Git will pause and ask you to select which lines to keep. Open the conflicting files, choose the correct lines, then finalize the merge:
+```bash
+git add <conflicting-file-path>
+git commit -m "merge: integrate origin/shoaibs-dev updates"
+```
+*Tip: Keep your feature branch updated daily to minimize large conflicts when submitting pull requests.*
+
+---
+
+## 15. Stashing Uncommitted Changes Safely
+
+**The Scenario:**
+You are in the middle of editing product controllers inside your feature branch, but your teammate asks you to review a bug on the main dev branch `shoaibs-dev` immediately. You try to switch branches, but Git blocks you because your current changes would be overwritten. You do not want to make a messy "half-done" commit just to switch branches.
+
+**The Solution:**
+You can temporarily save your work in Git's clipboard (the stash) and restore it later:
+
+### 1. Stash your current changes
+Save all modified tracked files to a temporary stack:
+```bash
+git stash
+```
+*Note: If you have new, untracked files you also want to stash, use `git stash -u`.*
+
+### 2. Switch branches and do your urgent work
+Your working directory is now clean. Switch branches safely:
+```bash
+git checkout shoaibs-dev
+# ... perform reviews or fixes ...
+```
+
+### 3. Switch back and restore your stash
+Switch back to your feature branch, then retrieve your stashed changes:
+```bash
+git checkout feature/day11-store-product-crud
+git stash pop
+```
+*Note: `git stash pop` applies the changes and removes them from the stash stack.*
+
+
+
+
+
+
+## Day 14 Scenario: Git Cherry-Pick (Applying Specific Commits Across Branches)
+
+### Real-World Context
+You implemented a critical bug fix on a hotfix branch and need to apply that exact commit onto your current `feature/day14-shopping-cart` branch without merging the whole hotfix branch.
+
+### Commands & Syntax
+```bash
+# 1. View commit history on hotfix branch
+git log --oneline -n 5
+
+# 2. Cherry-pick specific commit hash into current branch
+git cherry-pick <commit-hash>
+
+# 3. Resolve conflicts if any, stage changes, and continue
+git add .
+git cherry-pick --continue
+```

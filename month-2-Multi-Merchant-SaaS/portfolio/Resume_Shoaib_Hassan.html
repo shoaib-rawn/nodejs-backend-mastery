@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume - Shoaib Hassan (Full-Stack & Systems Engineer)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @media print {
+      body { background: white; color: black; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans p-4 sm:p-8">
+
+  <div class="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-2xl shadow-xl border border-slate-200 space-y-6">
+    
+    <!-- Top Action Bar -->
+    <div class="no-print flex items-center justify-between border-b pb-4 mb-6">
+      <a href="index.html" class="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-1">
+        <i class="fa-solid fa-arrow-left"></i> Back to Portfolio
+      </a>
+      <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow flex items-center gap-2">
+        <i class="fa-solid fa-print"></i> Print / Save as PDF
+      </button>
+    </div>
+
+    <!-- Header -->
+    <div class="border-b pb-6 space-y-2">
+      <h1 class="text-3xl font-extrabold text-slate-900">SHOAIB HASSAN</h1>
+      <p class="text-sm font-bold text-indigo-600">Full-Stack & Systems Engineer | Node.js, Next.js, PostgreSQL, Redis, WebSockets & AI Systems</p>
+      <div class="text-xs text-slate-600 flex flex-wrap gap-4 pt-1">
+        <span><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> Street 100, House 275, I-8/4, Islamabad, Pakistan</span>
+        <span><i class="fa-solid fa-phone text-emerald-600 mr-1"></i> +92 346 7201683</span>
+        <span><i class="fa-solid fa-envelope text-indigo-600 mr-1"></i> shoaibhassan533q@gmail.com</span>
+        <span><i class="fa-brands fa-linkedin text-blue-600 mr-1"></i> linkedin.com/in/shoaib-hassan-056357245</span>
+        <span><i class="fa-brands fa-github text-slate-800 mr-1"></i> github.com/shoaib-rawn</span>
+      </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="space-y-2">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 border-b pb-1">Executive Summary</h2>
+      <p class="text-xs text-slate-700 leading-relaxed">
+        Result-driven Full-Stack Software Engineer with strong experience building production-grade RESTful APIs, relational multi-tenant database architectures, and Next.js web applications. Specializes in Node.js, Express, PostgreSQL, Prisma ORM, Next.js (App Router), JWT Security, Redis Caching, WebSockets, BullMQ background queues, and AI Semantic Search systems.
+      </p>
+    </div>
+
+    <!-- Technical Skills (All 27 Categorized Skills) -->
+    <div class="space-y-3">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 border-b pb-1">Master Technical Skills (27 Skills)</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
+        <div class="space-y-1">
+          <h3 class="font-bold text-slate-900">Backend & Microservices:</h3>
+          <p>Node.js, Express.js, TypeScript, Zod Validation, OpenAPI 3.0/Swagger UI, Socket.io (WebSockets), BullMQ (Background Queues), Pino Logging.</p>
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-slate-900">Databases & Security:</h3>
+          <p>PostgreSQL, Prisma ORM, MongoDB & Mongoose, JWT Refresh Token Rotation (RTR), Tenant RBAC, Redis Caching & Rate Limiting, Cloudinary SDK & Multer, Stripe Webhooks.</p>
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-slate-900">Frontend Systems:</h3>
+          <p>Next.js 14 (App Router), React.js, Tailwind CSS, Shadcn UI & Lucide Icons, React Hook Form, TanStack Query, Axios Interceptors & Next Middleware.</p>
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-slate-900">DevOps, Testing & AI Systems:</h3>
+          <p>Docker & Docker Compose, Jest Unit Testing, Supertest Integration QA, OpenAI Embeddings API (`text-embedding-3`), `pgvector` Vector Indexing, AI Semantic Search Engine, Vercel Deployment.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured Projects -->
+    <div class="space-y-3">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 border-b pb-1">Featured Engineering Projects</h2>
+      
+      <div class="space-y-1">
+        <h3 class="text-xs font-bold text-slate-900">Multi-Merchant Enterprise SaaS Platform (Shopify Clone)</h3>
+        <p class="text-[11px] text-slate-600">Engineered multi-tenant SaaS backend with store isolation (storeId_slug), tenant RBAC, Refresh Token Rotation (RTR), Cloudinary stream uploads, Redis caching, and OpenAI pgvector AI Search.</p>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-xs font-bold text-slate-900">MiniPlane — Agile Project Management Tool (Plane.so Clone)</h3>
+        <p class="text-[11px] text-slate-600">Project-scoped RBAC with role weights, transaction-safe ($transaction) queries, Zod validation, and Vitest test suites.</p>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-xs font-bold text-slate-900">Job Seeking Portal Backend — Coblack Solutions (Remote, USA)</h3>
+        <p class="text-[11px] text-slate-600">Executed Knex.js zero-downtime database migrations, cutting DB downtime by 30%. Configured Pino error logging.</p>
+      </div>
+    </div>
+
+    <!-- Work Experience Timeline -->
+    <div class="space-y-3">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 border-b pb-1">Work Experience (2024 – 2026)</h2>
+
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between font-bold text-slate-900">
+          <span>Node.js Backend Developer — Logic Powered Solutions (F-5, Islamabad)</span>
+          <span class="text-indigo-600">Jan 2026 – Present (Current Role)</span>
+        </div>
+        <p class="text-[11px] text-slate-600">Architected REST APIs and PostgreSQL relational data models, middleware authorization pipelines, and performance tuning.</p>
+      </div>
+      
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between font-bold text-slate-900">
+          <span>Junior Full Stack Developer — Coblack Solutions (Remote, USA)</span>
+          <span class="text-indigo-600">Sept 2025 – Jan 2026</span>
+        </div>
+        <p class="text-[11px] text-slate-600">Built RESTful microservices for job portal, executed zero-downtime Knex migrations, reduced downtime by 30%.</p>
+      </div>
+
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between font-bold text-slate-900">
+          <span>Node.js Intern (6-Month Program) — PSEB Internship (Host: Ahamson)</span>
+          <span class="text-indigo-600">Feb 2025 – Jul 2025</span>
+        </div>
+        <p class="text-[11px] text-slate-600">Selected for 6-month government-backed software internship, MongoDB Mongoose schemas, REST endpoints, Postman testing.</p>
+      </div>
+
+      <div class="space-y-1 text-xs">
+        <div class="flex justify-between font-bold text-slate-900">
+          <span>MERN Stack Developer Intern — Autonomy Solutions, Sargodha</span>
+          <span class="text-indigo-600">Jun 2024 – Oct 2024</span>
+        </div>
+        <p class="text-[11px] text-slate-600">Built full-stack MERN features, connected REST endpoints with React frontend components.</p>
+      </div>
+    </div>
+
+    <!-- Education & Certification -->
+    <div class="space-y-2">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 border-b pb-1">Education & Certifications</h2>
+      <div class="text-xs space-y-1">
+        <p><strong>Bachelor of Science in Computer Science (BSCS)</strong> — University of Sargodha (2024) | CGPA: 3.04 / 4.00</p>
+        <p><strong>Full Stack Web Development Certification</strong> — NASTP (6-Month Intensive Program, 2025)</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
