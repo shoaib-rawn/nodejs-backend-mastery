@@ -11,6 +11,28 @@
       body { background: white; color: black; }
       .no-print { display: none; }
     }
+  
+    /* Strict Horizontal Overflow & Mobile Width Lock */
+    html {
+      overflow-x: hidden !important;
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    body {
+      overflow-x: hidden !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      position: relative !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box !important;
+    }
+    .container, section, nav, header, footer, div {
+      max-width: 100% !important;
+    }
+
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans p-4 sm:p-8">
