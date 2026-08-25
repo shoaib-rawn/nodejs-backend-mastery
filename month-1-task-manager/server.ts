@@ -12,6 +12,18 @@ const app: Application = express();
 // Middleware to parse JSON body data
 app.use(express.json());
 
+// Enable CORS
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+        return;
+    }
+    next();
+});
+
 // Apply Rate Limiting to all requests
 app.use(globalLimiter);
 

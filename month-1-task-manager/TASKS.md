@@ -29,7 +29,28 @@
 - `[x]` **Day 17:** API Rate Limiting (preventing spam) **[Git Flow: `feature/rate-limiting`]**
 - `[x]` **Day 18:** Refactoring code for best practices (DRY principle) **[Git Flow: `feature/refactoring`]**
 - `[x]` **Day 19:** Writing API Documentation (Swagger/Postman docs) **[Git Flow: `feature/swagger-docs`]**
-- `[ ]` **Day 20:** Project Review & Code Cleanup
-- `[ ]` **Week 4 Revision:** Final Month 1 Project review, API docs, rate limits, and push to GitHub
+- `[x]` **Day 20:** Project Review & Code Cleanup
+- `[x]` **Week 4 Revision:** Final Month 1 Project review, API docs, rate limits, and push to GitHub
 
-*(Days 21-30 are reserved for Month 2: E-Commerce API Database Integration)*
+## Next.js Frontend Integration (15-Day Plan)
+### Week 5: Next.js Fundamentals & Setup
+- `[x]` **Day 21:** Next.js Setup, Routing structure (globals.css, layout.tsx, page.tsx)
+- `[ ]` **Day 22:** Pages, Folder-based Routing, and Nested Layouts
+- `[ ]` **Day 23:** Dynamic Routes (`/tasks/[id]`) & Segment Parameters
+- `[ ]` **Day 24:** React Server Components (RSC) vs Client Components (`'use client'`)
+- `[ ]` **Day 25:** Connecting Frontend to Express (Client-side Data Fetching with `useEffect`)
+
+### Week 6: Full Integration & Advanced Next.js
+- `[ ]` **Day 26:** Handling Loading & Error UI States (`loading.tsx`, `error.tsx`)
+- `[ ]` **Day 27:** Express Proxy rewrites in Next.js (`next.config.ts`)
+- `[ ]` **Day 28:** Server-side Data Fetching in Next.js Layouts & Pages
+- `[ ]` **Day 29:** Building Reusable UI Elements (Sleek Tech Dashboard layout)
+- `[ ]` **Day 30:** Task Creation Form (integrating Title validation with Next.js state)
+
+### Week 7: Mutations, Uploads & Final Polish
+- `[ ]` **Day 31:** React Server Actions vs client-side mutations
+- `[ ]` **Day 32:** Image Upload integration (Multer boundary + Next.js FormData)
+- `[ ]` **Day 33:** Implementing Task Deletion & Complete Toggles
+- `[ ]` **Day 34:** State Synchronization & Client-side Searching/Sorting
+- `[ ]` **Day 35:** Next.js production builds & deployment options (PR Merge)
+

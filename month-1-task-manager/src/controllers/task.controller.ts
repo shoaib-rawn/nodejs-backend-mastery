@@ -81,7 +81,6 @@ export const getTaskById = async (req: Request, res: Response, next: NextFunctio
 export const createTask = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title } = req.body;
-        const imageUrl = req.file ? '/uploads/' + req.file.filename : undefined;
 
         const tasks = await readTasks();
         const newTask: Task = {
@@ -100,6 +99,13 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
 
         res.status(201).json({ success: true, message: "Task created successfully", data: newTask });
     } catch (error) {
+        if (req.file) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (err) {
+                console.log("Could not delete uploaded file on error:", err);
+            }
+        }
         next(error);
     }
 };
@@ -114,11 +120,21 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
         const task = tasks.find(t => t.id === id);
 
         if (!task) {
+            if (req.file) {
+                try {
+                    await fs.unlink(req.file.path);
+                } catch (err) {
+                    console.log("Could not delete uploaded file for non-existent task:", err);
+                }
+            }
             return res.status(404).json({ success: false, message: "Task not found" });
         }
 
         task.title = title !== undefined ? title : task.title;
-        task.completed = completed !== undefined ? completed : task.completed;
+        
+        if (completed !== undefined) {
+            task.completed = completed === 'true' || completed === true;
+        }
         
         // If the user uploaded a new image, update it and delete the old one
         if (req.file) {
@@ -139,6 +155,13 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
 
         res.status(200).json({ success: true, data: task });
     } catch (error) {
+        if (req.file) {
+            try {
+                await fs.unlink(req.file.path);
+            } catch (err) {
+                console.log("Could not delete uploaded file on error:", err);
+            }
+        }
         next(error);
     }
 };
@@ -155,7 +178,7 @@ export const deleteTask = async (req: Request, res: Response, next: NextFunction
             return res.status(404).json({ success: false, message: "Task not found" });
         }
 
-        const taskToDelete = tasks[taskIndex];
+        const taskToDelete = tasks[taskIndex]!;
         
         // Delete the image from the hard drive if it exists
         if (taskToDelete.imageUrl) {
